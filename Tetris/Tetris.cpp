@@ -1,8 +1,6 @@
 
 #include "Headers/Tetris.h"
 
-
-
 Tetris::Tetris()
 {
 }
@@ -11,11 +9,12 @@ Tetris::~Tetris()
 {
 }
 
-int Tetris::setup_shape(pos a[])
+int Tetris::setup_shape(pos a[], int* color)
 {
 	srand(time(NULL));
 
 	int choise = rand() % 7;		// Pick a num at random as the first shape.
+	*color = rand() % 4;
 	j = 0;
 	counter_move = 0;
 	switch (choise)
@@ -108,4 +107,25 @@ void Tetris::move(pos a[], char dir)
 	//if (check())
 	for (int i = 0;i < 4;i++)
 		a[i].x += k;
+}
+
+void Tetris::drop_ins(pos a[])
+{
+	bool stop = false;
+	while (!stop)
+	{
+		for (int i = 0;i < 4;i++)
+			if (a[i].y >= 18)	stop = true;
+	
+
+		for (int i = 0;i < 4;i++)
+			a[i].y++;
+		
+
+	}
+	for (int i = 0;i < 4;i++)
+	{
+		field[a[i].y][a[i].x] = 1;
+	}
+	
 }
