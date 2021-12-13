@@ -1,0 +1,73 @@
+#pragma once
+
+//	Class:				Tetris
+//	function:			rotate, move, drop
+//	project started:	Dec/13/2021
+//	Contact:			Calvin1242321	zxc1242321@gmail.com
+
+#include "Headers/GlobalVarible.h"
+#include "Headers/Coordinate.h"
+#include <stdlib.h> 
+#include <time.h>   
+
+class Tetris
+{
+public:
+	Tetris();
+	~Tetris();
+	
+	void rotate(pos a[], int index);
+	void rotate_assist(int s_Mxn, int shape[][4], pos a[]);
+	int setup_shape(pos a[]);
+	void set_assist(int shape[][4], pos a[]);
+	void move(pos a[], char dir);
+	
+private:
+	int j = 0;
+public:
+	int counter_move = 0;
+	int shape_I[I_FORMNUM][4] =
+	{
+		{1, 5, 9, 13},
+		{4, 5, 6, 7},
+	};
+
+	int shape_O[1][4] =
+	{
+		{1, 2, 5, 6},
+	};
+	
+	int shape_L[L_FORMNUM][4] =
+	{
+		{1, 5, 9, 10},
+		{4, 5, 6, 8},
+		{0, 1, 5, 9},
+		{2, 4, 5, 6},
+	};
+	int shape_J[J_FORMNUM][4] =
+	{
+		{1, 5, 9, 8},
+		{0, 4, 5, 6},
+		{2, 1, 5, 9},
+		{10, 4, 5, 6},
+	};
+	int shape_S[S_FORMNUM][4] =
+	{
+		{1, 2, 4, 5},
+		{0, 4, 5, 9},
+	};
+	int shape_Z[S_FORMNUM][4] =
+	{
+		{0, 1, 5, 6},
+		{2, 5, 6, 9},
+	};
+	int shape_T[T_FORMNUM][4] =
+	{
+		{1, 5, 6, 9},
+		{4, 5, 6, 9},
+		{1, 4, 5, 9},
+		{1, 4, 5, 6},
+	};
+	int field[HEIGHT][WIDTH] = { 0 };
+};
+
