@@ -2,6 +2,8 @@
 //	project started:	Dec/11/2021
 //	Contact:			Calvin1242321	zxc1242321@gmail.com
 #include <iostream>
+#include <stdlib.h> 
+#include <time.h>   
 #include "Headers/GlobalVarible.h"
 #include "Headers/Coordinate.h"
 #include "Headers/Tetris.h"
@@ -21,14 +23,16 @@ int main(void)
 
 	Sprite board(background);
 	Sprite block(blockTexture);
-	block.setTextureRect(IntRect(0, 0, blocksize, blocksize));
-
-	pos a[4];
-	int typ = tetris.setup_shape(a);
 	
 
+	pos a[4];
+	int color = rand() % 4;
+	int typ = tetris.setup_shape(a, &color);
+	
+	srand(time(NULL));
 	while(window.isOpen())
 	{
+		
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -43,22 +47,39 @@ int main(void)
 				if (event.key.code == Keyboard::Right)
 					tetris.move(a, 'r');
 				if (event.key.code == Keyboard::Space)
-					typ = tetris.setup_shape(a);
-
+				{
+					tetris.drop_ins(a);
+					typ = tetris.setup_shape(a, &color);
+				}
 			}
 			
 		}
+
+		
 
 		//fall
 
 		window.clear();
 		window.draw(board);
 		
+		for (int i = 0;i < HEIGHT;i++)
+		{
+			for (int j = 0;j < WIDTH;j++)
+			{
+				if (tetris.field[i][j] == 0) continue;
+				block.setTextureRect(IntRect(0 * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
+				block.setPosition(LEFTSPACE + j * BLOCKSIZE, TOPSPACE + i * BLOCKSIZE);
+				window.draw(block);
+			}
+		}
+
 		for (int i = 0;i < 4;i++)
 		{
-			block.setPosition(LEFTSPACE + a[i].x * blocksize, TOPSPACE + a[i].y * blocksize);
+			block.setTextureRect(IntRect(color * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
+			block.setPosition(LEFTSPACE + a[i].x * BLOCKSIZE, TOPSPACE + a[i].y * BLOCKSIZE);
 			window.draw(block);
 		}
+		
 		window.display();
 	}
 	return 0;
