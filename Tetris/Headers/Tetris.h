@@ -18,9 +18,10 @@ public:
 	
 	void rotate(pos a[], int index);
 	void rotate_assist(int s_Mxn, int shape[][4], pos a[]);
-	int setup_shape(pos a[]);
+	int setup_shape(pos a[], int* color);
 	void set_assist(int shape[][4], pos a[]);
 	void move(pos a[], char dir);
+	void drop_ins(pos a[]);
 	
 private:
 	int j = 0;
