@@ -1,6 +1,6 @@
 #pragma once
 
-const int blocksize = 40;
+const int BLOCKSIZE = 40;
 const int WIDTH = 10;
 const int HEIGHT = 20;
 const int LEFTSPACE = 710;
