@@ -2,8 +2,8 @@
 //	project started:	Dec/11/2021
 //	Contact:			Calvin1242321	zxc1242321@gmail.com
 #include <iostream>
-#include <stdlib.h> 
-#include <time.h>   
+#include <stdlib.h>						// for rand
+#include <time.h>						// for rand
 #include "Headers/GlobalVarible.h"
 #include "Headers/Coordinate.h"
 #include "Headers/Tetris.h"
@@ -25,6 +25,9 @@ int main(void)
 	Sprite block(blockTexture);
 	
 
+	clock_t start, end;
+	start = clock();
+
 	pos a[4];
 	int color = rand() % 4;
 	int typ = tetris.setup_shape(a, &color);
@@ -32,14 +35,18 @@ int main(void)
 	srand(time(NULL));
 	while(window.isOpen())
 	{
-		
+		end = clock();
+		std::cout << start << std::endl;
 		Event event;
 		while (window.pollEvent(event))
 		{
 			if (event.type == Event::Closed)		window.close();
 			if (event.type == Event::KeyPressed)
 			{
-				
+				if (event.key.code == Keyboard::Down)
+				{
+					//	acceslation falling time
+				}
 				if (event.key.code == Keyboard::Up)
 					tetris.rotate(a, typ);
 				if (event.key.code == Keyboard::Left)
@@ -48,16 +55,24 @@ int main(void)
 					tetris.move(a, 'r');
 				if (event.key.code == Keyboard::Space)
 				{
-					tetris.drop_ins(a);
+					tetris.drop_ins(a, color);
 					typ = tetris.setup_shape(a, &color);
 				}
-			}
-			
+			}	
 		}
 
+		//	display where is current shape would locate.
+		
 		
 
-		//fall
+		// fall
+		if (end - start > FALL_TIME)
+		{
+			start = end;
+			tetris.falling(a);
+		}
+
+
 
 		window.clear();
 		window.draw(board);
@@ -66,8 +81,8 @@ int main(void)
 		{
 			for (int j = 0;j < WIDTH;j++)
 			{
-				if (tetris.field[i][j] == 0) continue;
-				block.setTextureRect(IntRect(0 * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
+				if (tetris.field[i][j] == -1) continue;
+				block.setTextureRect(IntRect(tetris.field[i][j] * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
 				block.setPosition(LEFTSPACE + j * BLOCKSIZE, TOPSPACE + i * BLOCKSIZE);
 				window.draw(block);
 			}
