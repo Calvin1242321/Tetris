@@ -1,10 +1,12 @@
 # THIS PROJECT IS NOT FINISHED YET   
 
-lack: preview  
+lack:  
 
-      hold  
+      preview    
       
-      clears line which is full  
+      hold    
+      
+      clears line which is full    
       
       internet ( Not certain )  
       
