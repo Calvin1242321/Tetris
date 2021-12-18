@@ -21,12 +21,15 @@ public:
 	int setup_shape(pos a[], int* color);
 	void set_assist(int shape[][4], pos a[]);
 	void move(pos a[], char dir);
-	void drop_ins(pos a[]);
-	
+	void drop_ins(pos a[], int color);
+	bool check_availble(pos a[]);
+	void show_locate(pos a[], int color);
+	void falling(pos a[]);
 private:
 	int j = 0;
 public:
 	int counter_move = 0;
+	int counter_fall = 0;
 	int shape_I[I_FORMNUM][4] =
 	{
 		{1, 5, 9, 13},
@@ -69,6 +72,6 @@ public:
 		{1, 4, 5, 9},
 		{1, 4, 5, 6},
 	};
-	int field[HEIGHT][WIDTH] = { 0 };
+	int field[HEIGHT][WIDTH];
 };
 
