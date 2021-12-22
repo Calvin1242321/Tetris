@@ -29,26 +29,25 @@ int main(void)
 	start = clock();
 
 	pos a[4];
-	int color = rand() % 4;
-	int typ = tetris.setup_shape(a, &color);
-	
-	srand(time(NULL));
+	int color = 0;
+	int deltatime = 8;
+	bool need_next = false;
+	color = tetris.popAndSet(a);
+
 	while(window.isOpen())
 	{
 		end = clock();
-		std::cout << start << std::endl;
 		Event event;
+		deltatime = 8;
 		while (window.pollEvent(event))
 		{
 			if (event.type == Event::Closed)		window.close();
 			if (event.type == Event::KeyPressed)
 			{
 				if (event.key.code == Keyboard::Down)
-				{
-					//	acceslation falling time
-				}
+					deltatime = 1;
 				if (event.key.code == Keyboard::Up)
-					tetris.rotate(a, typ);
+					tetris.rotate(a, color);
 				if (event.key.code == Keyboard::Left)
 					tetris.move(a, 'l');
 				if (event.key.code == Keyboard::Right)
@@ -56,27 +55,39 @@ int main(void)
 				if (event.key.code == Keyboard::Space)
 				{
 					tetris.drop_ins(a, color);
-					typ = tetris.setup_shape(a, &color);
+					tetris.setup_shape(a, &color);
 				}
 			}	
 		}
 
-		//	display where is current shape would locate.
-		
+
+		//  preView
 		
 
+
+		//	display where is current shape would locate.
+		//	show_locate(a)
+		
 		// fall
-		if (end - start > FALL_TIME)
+		if ( end - start > FALL_TIME * deltatime ) // fix FALL_TIME with deltatime
 		{
-			start = end;
-			tetris.falling(a);
+			if (need_next == false)
+			{
+				start = end;
+				need_next = tetris.falling(a, color);
+			}
 		}
 
-
-
+		if (end - start > DELAY_TIME && need_next == true)
+		{
+			need_next = false;
+			start = end;
+			tetris.setup_shape(a, &color);
+		}
+		
 		window.clear();
 		window.draw(board);
-		
+		// field
 		for (int i = 0;i < HEIGHT;i++)
 		{
 			for (int j = 0;j < WIDTH;j++)
@@ -87,7 +98,7 @@ int main(void)
 				window.draw(block);
 			}
 		}
-
+		// current
 		for (int i = 0;i < 4;i++)
 		{
 			block.setTextureRect(IntRect(color * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
