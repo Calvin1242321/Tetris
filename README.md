@@ -8,3 +8,5 @@ lack:
         
       internet 
       
+      A system to determin whether you lose.
+      
