@@ -9,6 +9,7 @@
 #include "Headers/Coordinate.h"
 #include <stdlib.h> 
 #include <time.h>   
+#include <queue>
 
 class Tetris
 {
@@ -18,16 +19,20 @@ public:
 	
 	void rotate(pos a[], int index);
 	void rotate_assist(int s_Mxn, int shape[][4], pos a[]);
-	int setup_shape(pos a[], int* color);
+	void setup_shape(pos a[], int* color);
 	void set_assist(int shape[][4], pos a[]);
 	void move(pos a[], char dir);
 	void drop_ins(pos a[], int color);
 	bool check_availble(pos a[]);
 	void show_locate(pos a[], int color);
-	void falling(pos a[]);
+	bool falling(pos a[], int color);
+	void clean();
+	void clean_assist(int i);
+	int popAndSet(pos a[]);
 private:
 	int j = 0;
 public:
+	std::queue<int> tetromino;
 	int counter_move = 0;
 	int counter_fall = 0;
 	int shape_I[I_FORMNUM][4] =
@@ -43,17 +48,17 @@ public:
 	
 	int shape_L[L_FORMNUM][4] =
 	{
-		{1, 5, 9, 10},
-		{4, 5, 6, 8},
+		{0, 1, 2, 4},
 		{0, 1, 5, 9},
 		{2, 4, 5, 6},
+		{1, 5, 9, 10},
 	};
 	int shape_J[J_FORMNUM][4] =
 	{
-		{1, 5, 9, 8},
 		{0, 4, 5, 6},
 		{2, 1, 5, 9},
 		{10, 4, 5, 6},
+		{1, 5, 9, 8},
 	};
 	int shape_S[S_FORMNUM][4] =
 	{
@@ -72,6 +77,6 @@ public:
 		{1, 4, 5, 9},
 		{1, 4, 5, 6},
 	};
-	int field[HEIGHT][WIDTH];
+	int field[HEIGHT][WIDTH];	// empty: -1
 };
 
