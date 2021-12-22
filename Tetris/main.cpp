@@ -8,37 +8,46 @@
 #include "Headers/Coordinate.h"
 #include "Headers/Tetris.h"
 #include "SFML/Graphics.hpp"
+#include "SFML/Network.hpp"
 
 using namespace sf;
 
 int main(void)
 {
 	sf::RenderWindow window(sf::VideoMode(1920, 990),"The Tetris");
-
+	
 	Tetris tetris;
 	Texture blockTexture;
 	Texture background;
+	Texture ghostT;
 	blockTexture.loadFromFile("Images/Tetris.png");
 	background.loadFromFile("Images/Tboard.png");
+	ghostT.loadFromFile("Images/ghost.png");
 
 	Sprite board(background);
 	Sprite block(blockTexture);
+	Sprite ghost(ghostT);
 	
-
 	clock_t start, end;
-	start = clock();
+	start = clock();	
 
-	pos a[4];
-	int color = 0;
+	pos block_pos[4];		//block pos
+	pos next_pos[PREVIEW_NUM][4];
+	int currentTetro = 0;
 	int deltatime = 8;
+	int next_arr[4];
+	for (int i = 0;i < 4;i++)	next_arr[i] = -1;
+
 	bool need_next = false;
-	color = tetris.popAndSet(a);
+
+	currentTetro = tetris.popAndSet(block_pos);
+	tetris.set_preview(next_arr, next_pos);
 
 	while(window.isOpen())
 	{
-		end = clock();
+		end = clock();	
 		Event event;
-		deltatime = 8;
+		deltatime = 8;			// level would change this parameter.
 		while (window.pollEvent(event))
 		{
 			if (event.type == Event::Closed)		window.close();
@@ -47,34 +56,37 @@ int main(void)
 				if (event.key.code == Keyboard::Down)
 					deltatime = 1;
 				if (event.key.code == Keyboard::Up)
-					tetris.rotate(a, color);
+					tetris.rotate(block_pos, currentTetro);
 				if (event.key.code == Keyboard::Left)
-					tetris.move(a, 'l');
+					tetris.move(block_pos, 'l');
 				if (event.key.code == Keyboard::Right)
-					tetris.move(a, 'r');
+					tetris.move(block_pos, 'r');
 				if (event.key.code == Keyboard::Space)
 				{
-					tetris.drop_ins(a, color);
-					tetris.setup_shape(a, &color);
+					tetris.drop_ins(block_pos, currentTetro);
+					tetris.setup_shape(block_pos, &currentTetro);
+					tetris.set_preview(next_arr, next_pos);
+				}
+				if (event.key.code == Keyboard::C)
+				{
+					tetris.setup_shape(block_pos, &currentTetro);
+					tetris.set_preview(next_arr, next_pos);
 				}
 			}	
 		}
-
-
 		//  preView
-		
 
 
 		//	display where is current shape would locate.
-		//	show_locate(a)
-		
+		tetris.show_locate(block_pos);
+
 		// fall
 		if ( end - start > FALL_TIME * deltatime ) // fix FALL_TIME with deltatime
 		{
 			if (need_next == false)
 			{
-				start = end;
-				need_next = tetris.falling(a, color);
+				start = end;			
+				need_next = tetris.falling(block_pos, currentTetro);
 			}
 		}
 
@@ -82,7 +94,8 @@ int main(void)
 		{
 			need_next = false;
 			start = end;
-			tetris.setup_shape(a, &color);
+			tetris.setup_shape(block_pos, &currentTetro);
+			tetris.set_preview(next_arr, next_pos);
 		}
 		
 		window.clear();
@@ -98,14 +111,37 @@ int main(void)
 				window.draw(block);
 			}
 		}
+		// ghost field
+		for (int i = 0;i < HEIGHT;i++)
+		{
+			for (int j = 0;j < WIDTH;j++)
+			{
+				if (tetris.ghostfield[i][j] == -1) continue;
+				ghost.setTextureRect(IntRect(0 * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
+				ghost.setPosition(LEFTSPACE + j * BLOCKSIZE, TOPSPACE + i * BLOCKSIZE);
+				window.draw(ghost);
+			}
+		}
 		// current
 		for (int i = 0;i < 4;i++)
 		{
-			block.setTextureRect(IntRect(color * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
-			block.setPosition(LEFTSPACE + a[i].x * BLOCKSIZE, TOPSPACE + a[i].y * BLOCKSIZE);
+			block.setTextureRect(IntRect(currentTetro * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
+			block.setPosition(LEFTSPACE + block_pos[i].x * BLOCKSIZE, TOPSPACE + block_pos[i].y * BLOCKSIZE);
 			window.draw(block);
 		}
-		
+
+		// next preview
+		for (int i = 0;i < 4;i++)
+		{
+			for (int j = 0;j < 4;j++)
+			{
+				if (next_arr[j] == -1)	continue;
+				block.setTextureRect(IntRect(next_arr[i] * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
+				block.setPosition(PREVIEW_LEFT + next_pos[i][j].x * BLOCKSIZE,TOPSPACE + 25 +
+					i * BLOCKSIZE * 3 + next_pos[i][j].y * BLOCKSIZE);
+				window.draw(block);
+			}
+		}
 		window.display();
 	}
 	return 0;
