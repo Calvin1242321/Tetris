@@ -2,9 +2,9 @@
 
 lack:  
      
-      hold    
-        
+      hold piece     
       internet 
-      
-      A system to determin whether you lose.
+      counting points & line
+      T-spin        no idea
+      End game      @ trash-black-tree 
       
