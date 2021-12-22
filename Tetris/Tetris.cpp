@@ -5,26 +5,33 @@
 Tetris::Tetris()
 {
 	for (int i = 0;i < HEIGHT;i++)
-		for (int j = 0;j < WIDTH;j++)	field[i][j] = -1;
-	int x = 0;
+	{
+		for (int j = 0;j < WIDTH;j++)
+		{
+			ghostfield[i][j] = -1;
+			field[i][j] = -1;
+		}
+	}
 
+	int x = 0;
 	srand(time(NULL));
-	for (int i = 0;i < PREVIEW_NUM;i++)
+	for (int i = 0;i <= PREVIEW_NUM;i++)
 	{
 		x = rand() % 7;
 		tetromino.push(x);
 	}
-	
 }
 
 Tetris::~Tetris()
 {
 }
 
+
 int Tetris::popAndSet(pos a[])
 {
 	int x = tetromino.front();
 	tetromino.pop();
+
 	switch (x)
 	{
 	case 0:
@@ -54,11 +61,10 @@ int Tetris::popAndSet(pos a[])
 	return x;
 }
 
-//	last modified:	Dec/19/2021
+
+//	last modified:	Dec/12/2021
 //	Creator:		Calvin1242321
 //	function:		Pick a shape randomly then return that shape.
-//	lack:			1. It should follow the rules of tetris design.
-//					2. Using queue to preview next 4 shapes. 
 void Tetris::setup_shape(pos a[], int* color)
 {
 	// reset
@@ -69,12 +75,10 @@ void Tetris::setup_shape(pos a[], int* color)
 
 	srand(time(NULL));
 
-	// Pick a num at random as the first shape.
 	int choice = rand() % 7;
 	tetromino.push(choice);
 	*color = tetromino.front();
 	tetromino.pop();
-	//*color = choice;
 	switch (*color)
 	{
 	case 0:
@@ -105,10 +109,18 @@ void Tetris::setup_shape(pos a[], int* color)
 }
 void Tetris::set_assist(int shape[][4], pos a[])
 {
-	for (int i = 0;i < 4;i++)
+	for (int i = 0;i < 4;i++)	
 	{
 		a[i].x = shape[0][i] % 4;
 		a[i].y = shape[0][i] / 4;
+	}
+}
+void Tetris::set_assist(int shape[][4], pos a[], int parameter)
+{
+	for (int i = 0;i < 4;i++)
+	{
+		a[i].x = shape[parameter][i] % 4;
+		a[i].y = shape[parameter][i] / 4;
 	}
 }
 
@@ -145,12 +157,13 @@ void Tetris::rotate(pos a[], int index)
 	}
 }
 void Tetris::rotate_assist(int s_Mxn, int shape[][4], pos a[])
-{
+{							// 4		//shapeJ		
+							//
 	if (j != s_Mxn - 1)	j++;		//	cycle 0 ~ FORMNUM
 	else j = 0;						//
 
-	pos t[4];
-	for (int i = 0;i < 4;i++)	t[i] = a[i];
+	pos t[4];									// a[0:4]: 0456
+	for (int i = 0;i < 4;i++)	t[i] = a[i];		//copy a
 
 	for (int i = 0;i < 4;i++)
 	{
@@ -166,7 +179,7 @@ void Tetris::rotate_assist(int s_Mxn, int shape[][4], pos a[])
 //	Creator:		Calvin1242321
 //	status:			It's working.
 void Tetris::move(pos a[], char dir)
-{
+{							// l or r
 	pos t[4];
 	for (int i = 0;i < 4;i++)	t[i] = a[i];
 
@@ -248,44 +261,54 @@ bool Tetris::falling(pos a[], int color)
 }
 
 
-
-//	last modified:	DEC/19/2021
+//	last modified:	DEC/22/2021
 //	Creator:		Calvin1242321
-//	status:			It's not working.	
-void Tetris::show_locate(pos a[], int color)
+//	status:			It's working.	
+void Tetris::show_locate(pos a[])
 {
+	for (int i = 0;i < HEIGHT;i++)
+		for (int j = 0;j < WIDTH;j++)	ghostfield[i][j] = -1;
+
 	pos t[4];
 	for (int i = 0;i < 4;i++)	t[i] = a[i];
 	int c = 0;
-	while (c < 20)
+	while (true)
 	{
 		c++;
 		for (int i = 0;i < 4;i++)	t[i].y++;
-		if (!check_availble(t))	break;	
+		if (!check_availble(t))
+		{
+			for (int i = 0;i < 4;i++)	t[i].y--;
+			break;
+		}
 	}
 	for (int i = 0;i < 4;i++)
 	{
-		//	abcde[t[i].y][t[i].x] = color;				abcde must be clean when every loop is started.
+		ghostfield[t[i].y][t[i].x] = 1;				
 	}
 }
 
+
+//	last modified:	DEC/19/2021
+//	Creator:		Calvin1242321
+//	status:			It's working.	
 void Tetris::clean()
 {
 	for (int i = HEIGHT - 1; i >= 0;i--)
 	{
-		bool sc = true;
+		bool shouldclear = true;		
 		for (int j = 0;j < WIDTH;j++)
 		{
 			if (field[i][j] == -1)
 			{
-				sc = false;
+				shouldclear = false;
 				break;
 			}	
 		}
-		if (sc)
+		if (shouldclear)
 		{
 			clean_assist(i);
-			i = HEIGHT;
+			i = HEIGHT;		// set to bottom
 		}
 	}
 }
@@ -296,5 +319,52 @@ void Tetris::clean_assist(int i )
 		for (int j = 0;j < WIDTH;j++)
 			field[i][j] = field[i - 1][j];
 		clean_assist(i - 1);
+	}
+}
+
+void Tetris::set_preview(int r[], pos f[][4])
+{
+	std::queue<int> a;
+	a = tetromino;
+	std::cout << "\n";
+	int i = 0;
+	while (!a.empty())
+	{
+		r[i] = a.front();
+		i++;
+		a.pop();
+	}
+	set_previewPos(r, f);
+}
+void Tetris::set_previewPos(int r[], pos a[][4])
+{
+	for (int i = 0;i < PREVIEW_NUM;i++)
+	{
+		switch (r[i])
+		{
+		case 0:
+			set_assist(shape_J, a[i]);
+			break;
+		case 1:
+			set_assist(shape_S, a[i]);
+			break;
+		case 2:
+			set_assist(shape_Z, a[i]);
+			break;
+		case 3:
+			set_assist(shape_O, a[i]);
+			break;
+		case 4:
+			set_assist(shape_T, a[i], 1);
+			break;
+		case 5:
+			set_assist(shape_I, a[i], 1);
+			break;
+		case 6:
+			set_assist(shape_L, a[i]);
+			break;
+		default:
+			break;
+		}
 	}
 }
