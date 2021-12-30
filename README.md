@@ -1,6 +1,7 @@
 # THIS PROJECT IS NOT FINISHED YET   
 
-lack:
+lack:  
+
 hold piece   
 
 internet   
