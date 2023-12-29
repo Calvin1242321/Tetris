@@ -20,7 +20,7 @@ public:
 	~Tetris();
 	
 	void rotate(pos a[], int index);
-	void rotate_assist(int s_Mxn, int shape[][4], pos a[]);
+	void rotate_assist(int s_Mxn, int shape[][4], pos a[], bool &isSucess);
 	void setup_shape(pos a[], int* color);
 	void set_assist(int shape[][4], pos a[]);
 	void set_assist(int shape[][4], pos a[], int parameter);
@@ -37,16 +37,22 @@ public:
 	
 	int popAndSet(pos a[]);
 private:
-	int j = 0;
+	int needRotateForm = 0;
 public:
 	int cleaned = 0;
 	std::queue<int> tetromino;
 	int counter_move = 0;
 	int counter_fall = 0;
+
 	int shape_I[I_FORMNUM][4] =
 	{
 		{1, 5, 9, 13},
 		{4, 5, 6, 7},
+	};
+	int shape_I_2[I_FORMNUM][4] =
+	{
+		{1, 5, 9, 13},
+		{0, 1, 2, 3},
 	};
 
 	int shape_O[1][4] =

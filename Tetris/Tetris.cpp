@@ -71,7 +71,7 @@ int Tetris::popAndSet(pos a[])
 void Tetris::setup_shape(pos a[], int* color)
 {
 	// reset
-	j = 0;
+	needRotateForm = 0;
 	counter_move = 0;
 	counter_fall = 0;
 	
@@ -133,47 +133,59 @@ void Tetris::set_assist(int shape[][4], pos a[], int parameter)
 //	status:			It's working.
 void Tetris::rotate(pos a[], int index)
 {
+	bool isSuccess = true;
 	switch (index)
 	{
 	case 0:
-		rotate_assist(J_FORMNUM, shape_J, a);
+		rotate_assist(J_FORMNUM, shape_J, a, isSuccess);
 		break;
 	case 1:
-		rotate_assist(S_FORMNUM, shape_S, a);
+		rotate_assist(S_FORMNUM, shape_S, a, isSuccess);
 		break;
 	case 2:
-		rotate_assist(Z_FORMNUM, shape_Z, a);
+		rotate_assist(Z_FORMNUM, shape_Z, a, isSuccess);
 		break;
 	case 3:
-		rotate_assist(O_FORMNUM, shape_O, a);
+		rotate_assist(O_FORMNUM, shape_O, a, isSuccess);
 		break;
 	case 4:
-		rotate_assist(T_FORMNUM, shape_T, a);
+		rotate_assist(T_FORMNUM, shape_T, a, isSuccess);
 		break;
 	case 5:
-		rotate_assist(I_FORMNUM, shape_I, a);
+		rotate_assist(I_FORMNUM, shape_I, a, isSuccess);
+		if (!isSuccess) {
+			rotate_assist(I_FORMNUM, shape_I_2, a, isSuccess);
+		}
 		break;
 	case 6:
-		rotate_assist(L_FORMNUM, shape_L, a);
+		rotate_assist(L_FORMNUM, shape_L, a, isSuccess);
 		break;
 	default:
 		break;
 	}
 }
-void Tetris::rotate_assist(int s_Mxn, int shape[][4], pos a[])
+
+void Tetris::rotate_assist(int form_Num, int shape[][4], pos a[], bool &isSucess)
 {	
-	if (j != s_Mxn - 1)	j++;		
-	else j = 0;						
+	//if (needRotateForm != form_Num - 1)	needRotateForm++;
+	//	else needRotateForm = 0;
+	if (isSucess) {
+		needRotateForm = ((needRotateForm + 1) % form_Num);
+	}
 
 	pos t[4];									
 	for (int i = 0;i < 4;i++)	t[i] = a[i];		
 	for (int i = 0;i < 4;i++)
 	{
-		t[i].x = counter_move + shape[j][i] % 4;
-		t[i].y = counter_fall + shape[j][i] / 4;
+		t[i].x = counter_move + shape[needRotateForm][i] % 4;
+		t[i].y = counter_fall + shape[needRotateForm][i] / 4;
 	}
-	if (check_availble(t))
-		for (int i = 0;i < 4;i++)	a[i] = t[i];
+	if (check_availble(t)) {
+		for (int i = 0; i < 4; i++)	a[i] = t[i];
+	}
+	else{
+		isSucess = false;
+	}	
 }
 
 
