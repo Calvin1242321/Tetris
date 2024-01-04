@@ -11,6 +11,9 @@ SFML is a third-party multimedia interface.
 Please follow the links [SFML/learn](https://www.sfml-dev.org/tutorials/2.6) tutorials to link SFML to your enviroment, 
 then execute it.
 
+there is an youtuber's video teaching how to link it [SFML 2.4 For Beginners - 0: Getting Started.](https://www.youtube.com/watch?v=axIgxBQVBg0)
+
+
     
 
 ## how to play?
