@@ -1,9 +1,9 @@
-﻿//	project:			Tetris using SFML
-//	project started:	Dec/11/2021
-//	Contact:			Calvin1242321	zxc1242321@gmail.com
+﻿//    project:            Tetris using SFML
+//    project started:    Dec/11/2021
+//    Contact:            Calvin1242321    zxc1242321@gmail.com
 #include <iostream>
-#include <stdlib.h>						// for rand
-#include <time.h>						// for rand
+#include <stdlib.h>                        // for rand
+#include <time.h>                        // for rand
 #include <string>
 
 #include "Headers/GlobalVarible.h"
@@ -14,150 +14,154 @@
 #include "SFML/Network.hpp"
 #include "SFML/Audio.hpp"
 
-
 int main(void)
 {
-	
-	sf::RenderWindow window(sf::VideoMode(1920, 990),"The Tetris");
-	/*
-	Tetris tetris;
-	Game game;
-	Texture blockTexture;
-	Texture background;
-	Texture ghostT;
-	blockTexture.loadFromFile("Images/Tetris.png");
-	background.loadFromFile("Images/Tboard.png");
-	ghostT.loadFromFile("Images/ghost.png");
+    sf::RenderWindow window(sf::VideoMode(1920, 990),"The Tetris");
 
-	Sprite board(background);
-	Sprite block(blockTexture);
-	Sprite ghost(ghostT);
-	
-	clock_t start, end;
-	start = clock();	
+    Tetris tetris;
+    Game game;
+    sf::Texture blockTexture;
+    sf::Texture background;
+    sf::Texture ghostT;
+    blockTexture.loadFromFile("Images/Tetris.png");
+    background.loadFromFile("Images/Tboard.png");
+    ghostT.loadFromFile("Images/ghost.png");
 
-	pos block_pos[4];		//block pos
-	pos next_pos[PREVIEW_NUM][4];
-	int currentTetro = 0;
-	int deltatime = 8;
-	int next_arr[4];
-	for (int i = 0;i < 4;i++)	next_arr[i] = -1;
+    sf::Sprite board(background);
+    sf::Sprite block(blockTexture);
+    sf::Sprite ghost(ghostT);
 
-	bool need_next = false;
+    clock_t start, end;
+    start = clock();
 
-	currentTetro = tetris.popAndSet(block_pos);
-	tetris.set_preview(next_arr, next_pos);
 
-	Text tline;
-	Font font;
-	font.loadFromFile("fonts/t.otf");
-	tline.setFont(font);
-	tline.setCharacterSize(35); // exprimée en pixels, pas en points !
-	tline.setPosition(1400, 675);
-	tline.setString(std::to_string(0));
-	while(window.isOpen())
-	{
-		end = clock();	
-		Event event;
-		deltatime = 8;			// level would change this parameter.
-		while (window.pollEvent(event))
-		{
-			if (event.type == Event::Closed)		window.close();
-			if (event.type == Event::KeyPressed)
-			{
-				if (event.key.code == Keyboard::Down)
-					deltatime = 1;
-				if (event.key.code == Keyboard::Up)
-					tetris.rotate(block_pos, currentTetro);
-				if (event.key.code == Keyboard::Left)
-					tetris.move(block_pos, 'l');
-				if (event.key.code == Keyboard::Right)
-					tetris.move(block_pos, 'r');
-				if (event.key.code == Keyboard::Space)
-				{
-					tetris.drop_ins(block_pos, currentTetro);
-					tetris.setup_shape(block_pos, &currentTetro);
-					tetris.set_preview(next_arr, next_pos);
-				}
-				if (event.key.code == Keyboard::C)			// hold piece	not finished
-				{
-					tetris.setup_shape(block_pos, &currentTetro);
-					tetris.set_preview(next_arr, next_pos);
-				}
-			}	
-		}
+    int currentPiece = 0;
+    int deltatime = 8;
 
-		//	Displays the locatation of the falling piece. 
-		tetris.show_locate(block_pos);
+    bool spawnPiece = false;
 
-		// fall
-		if ( end - start > FALL_TIME * deltatime ) // fix FALL_TIME with deltatime
-		{
-			if (need_next == false)
-			{
-				start = end;			
-				need_next = tetris.falling(block_pos, currentTetro);
-			}
-		}
-		
-		if (end - start > DELAY_TIME && need_next == true)
-		{
-			need_next = false;
-			start = end;
-			tetris.setup_shape(block_pos, &currentTetro);
-			tetris.set_preview(next_arr, next_pos);
-		}
-		tline.setString(std::to_string(tetris.cleaned));
+    Position squarePosition[globalVariables::SQUARES_COMPOSED];
+    currentPiece = tetris.popAndSet(squarePosition);
 
-		window.clear();
-		window.draw(board);
+    Position previewPosition[globalVariables::PREVIEW_NUM][globalVariables::SQUARES_COMPOSED];
+    int preview_piece[4];
+    for (unsigned char i = 0; i < globalVariables::SQUARES_COMPOSED; i++) preview_piece[i] = -1;
+    tetris.set_preview(preview_piece, previewPosition);
 
-		// field
-		for (int i = 0;i < HEIGHT;i++)
-		{
-			for (int j = 0;j < WIDTH;j++)
-			{
-				if (tetris.field[i][j] == -1) continue;
-				block.setTextureRect(IntRect(tetris.field[i][j] * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
-				block.setPosition(LEFTSPACE + j * BLOCKSIZE, TOPSPACE + i * BLOCKSIZE);
-				window.draw(block);
-			}
-		}
+    sf::Text tline;
+    sf::Font font;
+    font.loadFromFile("fonts/t.otf");
+    tline.setFont(font);
+    tline.setCharacterSize(35);
+    tline.setPosition(1400, 675);
+    tline.setString(std::to_string(0));
 
-		// ghost
-		for (int i = 0;i < HEIGHT;i++)
-		{
-			for (int j = 0;j < WIDTH;j++)
-			{
-				if (tetris.ghostfield[i][j] == -1) continue;
-				ghost.setTextureRect(IntRect(0 * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
-				ghost.setPosition(LEFTSPACE + j * BLOCKSIZE, TOPSPACE + i * BLOCKSIZE);
-				window.draw(ghost);
-			}
-		}
-		// current
-		for (int i = 0;i < 4;i++)
-		{
-			block.setTextureRect(IntRect(currentTetro * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
-			block.setPosition(LEFTSPACE + block_pos[i].x * BLOCKSIZE, TOPSPACE + block_pos[i].y * BLOCKSIZE);
-			window.draw(block);
-		}
+    while(window.isOpen())
+    {
+        end = clock();    
+        sf::Event event;
+        deltatime = 8;            // level would change this parameter.
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)        window.close();
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Down)
+                    deltatime = 1;
+                if (event.key.code == sf::Keyboard::Up)
+                    tetris.rotate(squarePosition, currentPiece);
+                if (event.key.code == sf::Keyboard::Left)
+                    tetris.move(squarePosition, 'l');
+                if (event.key.code == sf::Keyboard::Right)
+                    tetris.move(squarePosition, 'r');
+                if (event.key.code == sf::Keyboard::Space)
+                {
+                    tetris.drop_ins(squarePosition, currentPiece);
+                    tetris.setup_shape(squarePosition, &currentPiece);
+                    tetris.set_preview(preview_piece, previewPosition);
+                }
+                if (event.key.code == sf::Keyboard::C)            // hold piece    not finished
+                {
+                    tetris.setup_shape(squarePosition, &currentPiece);
+                    tetris.set_preview(preview_piece, previewPosition);
+                }
+            }    
+        }
 
-		// next preview
-		for (int i = 0;i < 4;i++)
-		{
-			for (int j = 0;j < 4;j++)
-			{
-				if (next_arr[j] == -1)	continue;
-				block.setTextureRect(IntRect(next_arr[i] * BLOCKSIZE, 0, BLOCKSIZE, BLOCKSIZE));
-				block.setPosition(PREVIEW_LEFT + next_pos[i][j].x * BLOCKSIZE,TOPSPACE + 10 +
-					i * BLOCKSIZE * 3.5 + next_pos[i][j].y * BLOCKSIZE);
-				window.draw(block);
-			}
-		}
-		
-		window.draw(tline);
-		window.display();
-	}*/
-	return 0;
+        //    Displays the locatation of the falling piece. 
+        tetris.show_locate(squarePosition);
+
+        // fall
+        if ( end - start > globalVariables::FALL_TIME * deltatime ) // fix FALL_TIME with deltatime
+        {
+            if (spawnPiece == false)
+            {
+                start = end;
+                spawnPiece = tetris.falling(squarePosition, currentPiece);
+            }
+        }
+
+        if (end - start > globalVariables::DELAY_TIME && spawnPiece == true)
+        {
+            spawnPiece = false;
+            start = end;
+            tetris.setup_shape(squarePosition, &currentPiece);
+            tetris.set_preview(preview_piece, previewPosition);
+        }
+        tline.setString(std::to_string(tetris.cleaned));
+
+        window.clear();
+        window.draw(board);
+
+        // field
+        for (int i = 0;i < globalVariables::HEIGHT;i++)
+        {
+            for (int j = 0;j < globalVariables::WIDTH;j++)
+            {
+                if (tetris.field[i][j] == -1) continue;
+                block.setTextureRect(sf::IntRect(tetris.field[i][j] * globalVariables::BLOCKSIZE, 0,
+                                                 globalVariables::BLOCKSIZE, globalVariables::BLOCKSIZE));
+                block.setPosition(globalVariables::LEFTSPACE + j * globalVariables::BLOCKSIZE,
+                                  globalVariables::TOPSPACE + i * globalVariables::BLOCKSIZE);
+                window.draw(block);
+            }
+        }
+
+        // showing ghost piece
+        for (int i = 0;i < globalVariables::HEIGHT;i++)
+        {
+            for (int j = 0;j < globalVariables::WIDTH;j++)
+            {
+                if (tetris.ghostfield[i][j] == -1) continue;
+                ghost.setTextureRect(sf::IntRect(0 * globalVariables::BLOCKSIZE, 0, globalVariables::BLOCKSIZE, globalVariables::BLOCKSIZE));
+                ghost.setPosition(globalVariables::LEFTSPACE + j * globalVariables::BLOCKSIZE, globalVariables::TOPSPACE + i * globalVariables::BLOCKSIZE);
+                window.draw(ghost);
+            }
+        }
+        // current
+        for (int i = 0;i < 4;i++)
+        {
+            block.setTextureRect(sf::IntRect(currentPiece * globalVariables::BLOCKSIZE, 0, globalVariables::BLOCKSIZE, globalVariables::BLOCKSIZE));
+            block.setPosition(globalVariables::LEFTSPACE + squarePosition[i].x * globalVariables::BLOCKSIZE,
+                              globalVariables::TOPSPACE + squarePosition[i].y * globalVariables::BLOCKSIZE);
+            window.draw(block);
+        }
+
+        // next preview
+        for (int i = 0;i < 4;i++)
+        {
+            for (int j = 0;j < 4;j++)
+            {
+                if (preview_piece[j] == -1)    continue;
+                block.setTextureRect(sf::IntRect(preview_piece[i] * globalVariables::BLOCKSIZE, 0, globalVariables::BLOCKSIZE, globalVariables::BLOCKSIZE));
+                block.setPosition(globalVariables::PREVIEW_LEFT + previewPosition[i][j].x * globalVariables::BLOCKSIZE, globalVariables::TOPSPACE + 10 +
+                    i * globalVariables::BLOCKSIZE * 3.5 + previewPosition[i][j].y * globalVariables::BLOCKSIZE);
+                window.draw(block);
+            }
+        }
+        
+        window.draw(tline);
+        window.display();
+    }
+    return 0;
 }

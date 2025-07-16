@@ -4,4 +4,4 @@ typedef struct Coordinate
 {
 	int x;
 	int y;
-}pos;
+}Position;

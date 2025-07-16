@@ -1,19 +1,26 @@
 #pragma once
+#ifndef _GLOBALVARIABLE_
+#define _GLOBALVARIABLE
+namespace globalVariables {
+    const unsigned char SQUARES_COMPOSED = 4;
+    const unsigned char BLOCKSIZE = 40;
+    const unsigned char WIDTH = 10;
+    const unsigned char HEIGHT = 20;
+    const unsigned short LEFTSPACE = 710;
+    const unsigned short PREVIEW_LEFT = 1150;
+    const unsigned char TOPSPACE = 100;
 
-const int BLOCKSIZE = 40;
-const int WIDTH = 10;
-const int HEIGHT = 20;
-const int LEFTSPACE = 710;
-const int PREVIEW_LEFT = 1150;
-const int TOPSPACE = 100;
+    const unsigned char PREVIEW_NUM = 4;
+    const unsigned char I_FORMNUM = 2;
+    const unsigned char Z_FORMNUM = 2;
+    const unsigned char S_FORMNUM = 2;
+    const unsigned char O_FORMNUM = 1;
+    const unsigned char L_FORMNUM = 4, J_FORMNUM = 4;
+    const unsigned char T_FORMNUM = 4;
 
-const int PREVIEW_NUM = 4;
-const int I_FORMNUM = 2;
-const int Z_FORMNUM = 2;
-const int S_FORMNUM = 2;
-const int O_FORMNUM = 1;
-const int L_FORMNUM = 4, J_FORMNUM = 4;
-const int T_FORMNUM = 4;
+    const unsigned short FALL_TIME = 100;
+    const unsigned short DELAY_TIME = 1000;
+}
+#endif // !_GLOBALVARIABLE_
 
-const int FALL_TIME = 100;
-const int DELAY_TIME = 1000;
+
