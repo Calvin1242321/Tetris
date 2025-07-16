@@ -5,6 +5,7 @@
 #include <stdlib.h>						// for rand
 #include <time.h>						// for rand
 #include <string>
+
 #include "Headers/GlobalVarible.h"
 #include "Headers/Coordinate.h"
 #include "Headers/Tetris.h"
@@ -13,12 +14,12 @@
 #include "SFML/Network.hpp"
 #include "SFML/Audio.hpp"
 
-using namespace sf;
 
 int main(void)
 {
-	sf::RenderWindow window(sf::VideoMode(1920, 990),"The Tetris");
 	
+	sf::RenderWindow window(sf::VideoMode(1920, 990),"The Tetris");
+	/*
 	Tetris tetris;
 	Game game;
 	Texture blockTexture;
@@ -157,6 +158,6 @@ int main(void)
 		
 		window.draw(tline);
 		window.display();
-	}
+	}*/
 	return 0;
 }
