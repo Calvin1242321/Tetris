@@ -8,8 +8,7 @@ SFML is a third-party multimedia interface.
 
 ## how to run it
     
-Please follow the links [SFML/learn](https://www.sfml-dev.org/tutorials/2.6) tutorials to link SFML to your enviroment, 
-then execute it.
+The current version of my program only support compile at x86 configuration, remember to place corresponding dll file on the executable folder.
 
 there is an youtuber's video teaching how to link it [SFML 2.4 For Beginners - 0: Getting Started.](https://www.youtube.com/watch?v=axIgxBQVBg0)
 
