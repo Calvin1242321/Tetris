@@ -1,6 +1,4 @@
-
 #include "Headers/Tetris.h"
-#include <iostream>            // for testing, after finished this class you should delete this line.
 
 Tetris::Tetris()
 {
@@ -13,14 +11,13 @@ Tetris::Tetris()
         }
     }
 
-    int x = 0;
-    srand(time(NULL));
-    for (int i = 0;i <= globalVariables::PREVIEW_NUM;i++)
+    std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> dist(0, 6);
+    for (int i = 0; i <= globalVariables::PREVIEW_NUM; i++)
     {
-        x = rand() % 7;
-        piecesQueue.push(x);
+        int r = dist(rng);
+        piecesQueue.push(r);
     }
-    
 }
 
 Tetris::~Tetris()
@@ -351,7 +348,7 @@ void Tetris::set_preview(int r[], Position f[][4])
 {
     std::queue<int> a;
     a = piecesQueue;
-    std::cout << "\n";
+
     int i = 0;
     while (!a.empty())
     {

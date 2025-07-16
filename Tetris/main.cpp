@@ -14,33 +14,45 @@
 #include "SFML/Network.hpp"
 #include "SFML/Audio.hpp"
 
+/*
+int triggerEvent(sf::Event event, Tetris tetris, unsigned char *frameUnit) {
+    if (event.type == sf::Event::Closed)        window.close();
+    if (event.type == sf::Event::KeyPressed)
+    {
+        if (event.key.code == sf::Keyboard::Down)
+            *frameUnit = 1;
+        if (event.key.code == sf::Keyboard::Up)
+            tetris.rotate(squarePosition, currentPiece);
+        if (event.key.code == sf::Keyboard::Left)
+            tetris.move(squarePosition, 'l');
+        if (event.key.code == sf::Keyboard::Right)
+            tetris.move(squarePosition, 'r');
+        if (event.key.code == sf::Keyboard::Space)
+        {
+            tetris.drop_ins(squarePosition, currentPiece);
+            tetris.setup_shape(squarePosition, &currentPiece);
+            tetris.set_preview(preview_piece, previewPosition);
+        }
+        if (event.key.code == sf::Keyboard::C)            // hold piece    not finished
+        {
+            tetris.setup_shape(squarePosition, &currentPiece);
+            tetris.set_preview(preview_piece, previewPosition);
+        }
+    }
+    return 0
+}*/
+
 int main(void)
 {
-    sf::RenderWindow window(sf::VideoMode(1920, 990),"The Tetris");
-
-    Tetris tetris;
-    Game game;
-    sf::Texture blockTexture;
-    sf::Texture background;
-    sf::Texture ghostT;
-    blockTexture.loadFromFile("Images/Tetris.png");
-    background.loadFromFile("Images/Tboard.png");
-    ghostT.loadFromFile("Images/ghost.png");
-
-    sf::Sprite board(background);
-    sf::Sprite block(blockTexture);
-    sf::Sprite ghost(ghostT);
-
     clock_t start, end;
     start = clock();
 
-
     int currentPiece = 0;
-    int deltatime = 8;
 
     bool spawnPiece = false;
 
     Position squarePosition[globalVariables::SQUARES_COMPOSED];
+    Tetris tetris;
     currentPiece = tetris.popAndSet(squarePosition);
 
     Position previewPosition[globalVariables::PREVIEW_NUM][globalVariables::SQUARES_COMPOSED];
@@ -56,18 +68,32 @@ int main(void)
     tline.setPosition(1400, 675);
     tline.setString(std::to_string(0));
 
+    sf::Texture blockTexture;
+    sf::Texture background;
+    sf::Texture ghostT;
+    blockTexture.loadFromFile("Images/Tetris.png");
+    background.loadFromFile("Images/Tboard.png");
+    ghostT.loadFromFile("Images/ghost.png");
+
+    sf::Sprite board(background);
+    sf::Sprite block(blockTexture);
+    sf::Sprite ghost(ghostT);
+
+    unsigned char frameUnit = 8;
+
+    sf::RenderWindow window(sf::VideoMode(1920, 990), "The Tetris");
     while(window.isOpen())
     {
         end = clock();    
         sf::Event event;
-        deltatime = 8;            // level would change this parameter.
+        frameUnit = 8;            // level would change this parameter.
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)        window.close();
             if (event.type == sf::Event::KeyPressed)
             {
                 if (event.key.code == sf::Keyboard::Down)
-                    deltatime = 1;
+                    frameUnit = 1;
                 if (event.key.code == sf::Keyboard::Up)
                     tetris.rotate(squarePosition, currentPiece);
                 if (event.key.code == sf::Keyboard::Left)
@@ -85,14 +111,13 @@ int main(void)
                     tetris.setup_shape(squarePosition, &currentPiece);
                     tetris.set_preview(preview_piece, previewPosition);
                 }
-            }    
+            }
         }
 
-        //    Displays the locatation of the falling piece. 
         tetris.show_locate(squarePosition);
 
         // fall
-        if ( end - start > globalVariables::FALL_TIME * deltatime ) // fix FALL_TIME with deltatime
+        if ( end - start > globalVariables::FALL_TIME * frameUnit) // fix FALL_TIME with deltatime
         {
             if (spawnPiece == false)
             {

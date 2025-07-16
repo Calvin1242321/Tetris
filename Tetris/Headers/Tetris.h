@@ -1,26 +1,27 @@
-#pragma once
-
 //    Class:                Tetris
 //    function:            rotate, move, drop
 //    project started:    Dec/13/2021
 //    Contact:            Calvin1242321    zxc1242321@gmail.com
+#ifndef _PIECE_
+#define _PIECE_
 
+#pragma once
 #include "Headers/GlobalVarible.h"
 #include "Headers/Coordinate.h"
 #include "Headers/Game.h"
 #include <stdlib.h> 
-#include <time.h>   
+#include <time.h>
+#include <random>
 #include <queue>
-
 
 class Tetris
 {
 public:
     Tetris();
     ~Tetris();
-    
+
     void rotate(Position a[], int index);
-    void rotate_assist(int s_Mxn, int shape[][4], Position a[], bool &isSucess);
+    void rotate_assist(int s_Mxn, int shape[][4], Position a[], bool& isSucess);
     void setup_shape(Position a[], int* color);
     void set_assist(int shape[][4], Position a[]);
     void set_assist(int shape[][4], Position a[], int parameter);
@@ -34,7 +35,7 @@ public:
 
     bool check_availble(Position a[]);
     bool falling(Position a[], int color);
-    
+
     int popAndSet(Position a[]);
 private:
     int needRotateForm = 0;
@@ -56,7 +57,7 @@ public:
     int shape_O[1][globalVariables::SQUARES_COMPOSED] = {
         {1, 2, 5, 6},
     };
-    
+
     int shape_L[globalVariables::L_FORMNUM][globalVariables::SQUARES_COMPOSED] = {
         {0, 1, 2, 4},
         {0, 1, 5, 9},
@@ -87,4 +88,7 @@ public:
     int field[globalVariables::HEIGHT][globalVariables::WIDTH];    // empty: -1
     int ghostfield[globalVariables::HEIGHT][globalVariables::WIDTH];    // empty: -1
 };
+
+#endif // !_PIECE_
+
 
