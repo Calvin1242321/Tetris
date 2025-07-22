@@ -84,7 +84,7 @@ int main(void)
     sf::RenderWindow window(sf::VideoMode(1920, 990), "The Tetris");
     while(window.isOpen())
     {
-        end = clock();    
+        end = clock();
         sf::Event event;
         frameUnit = 8;            // level would change this parameter.
         while (window.pollEvent(event))
@@ -184,7 +184,7 @@ int main(void)
                 window.draw(block);
             }
         }
-        
+
         window.draw(tline);
         window.display();
     }
