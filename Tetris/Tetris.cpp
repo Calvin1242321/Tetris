@@ -2,20 +2,15 @@
 
 Tetris::Tetris()
 {
-    for (int i = 0;i < globalVariables::HEIGHT;i++)
-    {
-        for (int j = 0;j < globalVariables::WIDTH;j++)
-        {
+    for (int i = 0;i < globalVariables::HEIGHT;i++) {
+        for (int j = 0;j < globalVariables::WIDTH;j++) {
             ghostfield[i][j] = -1;
             field[i][j] = -1;
         }
     }
 
-    std::mt19937 rng(std::random_device{}());
-    std::uniform_int_distribution<int> dist(0, 6);
-    for (int i = 0; i <= globalVariables::PREVIEW_NUM; i++)
-    {
-        int r = dist(rng);
+    for (int i = 0; i <= globalVariables::PREVIEW_NUMBER; i++) {
+        int r = Game::get_random_number(0, 6);
         piecesQueue.push(r);
     }
 }
@@ -34,10 +29,10 @@ int Tetris::popAndSet(Position a[])
 
     switch (x)
     {
-    case 0:
+    case SHAPE_J_ID:
         set_assist(shape_J, a);
         break;
-    case 1:
+    case SHAPE_S_ID:
         set_assist(shape_S, a);
         break;
     case 2:
@@ -71,20 +66,18 @@ void Tetris::setup_shape(Position a[], int* color)
     needRotateForm = 0;
     counter_move = 0;
     counter_fall = 0;
-    
 
-    srand(time(NULL));
-
-    int choice = rand() % 7;
+    int choice = Game::get_random_number(0, 6);
     piecesQueue.push(choice);
+
     *color = piecesQueue.front();
     piecesQueue.pop();
     switch (*color)
     {
-    case 0:
+    case SHAPE_J_ID:
         set_assist(shape_J, a);
         break;
-    case 1:
+    case SHAPE_S_ID:
         set_assist(shape_S, a);
         break;
     case 2:
@@ -115,14 +108,6 @@ void Tetris::set_assist(int shape[][4], Position a[])
         a[i].y = shape[0][i] / 4;
     }
 }
-void Tetris::set_assist(int shape[][4], Position a[], int parameter)
-{
-    for (int i = 0;i < 4;i++)
-    {
-        a[i].x = shape[parameter][i] % 4;
-        a[i].y = shape[parameter][i] / 4;
-    }
-}
 
 //    last modified:    Dec/19/2021
 //    Creator:        Calvin1242321
@@ -133,10 +118,10 @@ void Tetris::rotate(Position a[], int index)
     bool isSuccess = true;
     switch (index)
     {
-    case 0:
+    case SHAPE_J_ID:
         rotate_assist(globalVariables::J_FORMNUM, shape_J, a, isSuccess);
         break;
-    case 1:
+    case SHAPE_S_ID:
         rotate_assist(globalVariables::S_FORMNUM, shape_S, a, isSuccess);
         break;
     case 2:
@@ -346,6 +331,7 @@ void Tetris::clean_assist(int i )
 //    status:            It's working.    
 void Tetris::set_preview(int r[], Position f[][4])
 {
+    assert(piecesQueue.size() == globalVariables::PREVIEW_NUMBER);
     std::queue<int> a;
     a = piecesQueue;
 
@@ -358,16 +344,17 @@ void Tetris::set_preview(int r[], Position f[][4])
     }
     set_previewPos(r, f);
 }
+
 void Tetris::set_previewPos(int r[], Position a[][4])
 {
-    for (int i = 0;i < globalVariables::PREVIEW_NUM;i++)
+    for (int i = 0;i < globalVariables::PREVIEW_NUMBER;i++)
     {
         switch (r[i])
         {
-        case 0:
+        case SHAPE_J_ID:
             set_assist(shape_J, a[i]);
             break;
-        case 1:
+        case SHAPE_S_ID:
             set_assist(shape_S, a[i]);
             break;
         case 2:
@@ -377,10 +364,10 @@ void Tetris::set_previewPos(int r[], Position a[][4])
             set_assist(shape_O, a[i]);
             break;
         case 4:
-            set_assist(shape_T, a[i], 1);
+            set_assist(shape_T, a[i]);
             break;
         case 5:
-            set_assist(shape_I, a[i], 1);
+            set_assist(shape_I, a[i]);
             break;
         case 6:
             set_assist(shape_L, a[i]);

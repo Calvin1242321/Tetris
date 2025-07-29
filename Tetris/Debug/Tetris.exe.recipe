@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>E:\tetris\Win32\Debug\Tetris.exe</FullPath>
+      <FullPath>E:\tetris\Output\Debug\Tetris.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

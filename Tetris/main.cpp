@@ -55,9 +55,9 @@ int main(void)
     Tetris tetris;
     currentPiece = tetris.popAndSet(squarePosition);
 
-    Position previewPosition[globalVariables::PREVIEW_NUM][globalVariables::SQUARES_COMPOSED];
-    int preview_piece[4];
-    for (unsigned char i = 0; i < globalVariables::SQUARES_COMPOSED; i++) preview_piece[i] = -1;
+    Position previewPosition[globalVariables::PREVIEW_NUMBER][globalVariables::SQUARES_COMPOSED];
+    int preview_piece[globalVariables::PREVIEW_NUMBER];
+    for (unsigned char i = 0; i < globalVariables::PREVIEW_NUMBER; i++) preview_piece[i] = -1;
     tetris.set_preview(preview_piece, previewPosition);
 
     sf::Text tline;
@@ -173,14 +173,14 @@ int main(void)
         }
 
         // next preview
-        for (int i = 0;i < 4;i++)
+        for (int i = 0;i < globalVariables::PREVIEW_NUMBER;i++)
         {
             for (int j = 0;j < 4;j++)
             {
                 if (preview_piece[j] == -1)    continue;
                 block.setTextureRect(sf::IntRect(preview_piece[i] * globalVariables::BLOCKSIZE, 0, globalVariables::BLOCKSIZE, globalVariables::BLOCKSIZE));
-                block.setPosition(globalVariables::PREVIEW_LEFT + previewPosition[i][j].x * globalVariables::BLOCKSIZE, globalVariables::TOPSPACE + 10 +
-                    i * globalVariables::BLOCKSIZE * 3.5 + previewPosition[i][j].y * globalVariables::BLOCKSIZE);
+                block.setPosition(globalVariables::PREVIEW_LEFT + previewPosition[i][j].x * globalVariables::BLOCKSIZE, globalVariables::TOPSPACE + 30 +
+                    i * globalVariables::BLOCKSIZE * 4 + previewPosition[i][j].y * globalVariables::BLOCKSIZE);
                 window.draw(block);
             }
         }

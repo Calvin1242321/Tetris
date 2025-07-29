@@ -13,6 +13,10 @@
 #include <time.h>
 #include <random>
 #include <queue>
+#include <assert.h>
+
+#define SHAPE_J_ID 0
+#define SHAPE_S_ID 1
 
 class Tetris
 {
@@ -24,7 +28,6 @@ public:
     void rotate_assist(int s_Mxn, int shape[][4], Position a[], bool& isSucess);
     void setup_shape(Position a[], int* color);
     void set_assist(int shape[][4], Position a[]);
-    void set_assist(int shape[][4], Position a[], int parameter);
     void move(Position a[], char dir);
     void drop_ins(Position a[], int color);
     void show_locate(Position a[]);
@@ -46,8 +49,8 @@ public:
     int counter_fall = 0;
 
     int shape_I[globalVariables::I_FORMNUM][globalVariables::SQUARES_COMPOSED] = {
-        {1, 5, 9, 13},
         {4, 5, 6, 7},
+        {1, 5, 9, 13}
     };
     int shape_I_2[globalVariables::I_FORMNUM][globalVariables::SQUARES_COMPOSED] = {
         {1, 5, 9, 13},
@@ -80,10 +83,10 @@ public:
         {2, 5, 6, 9},
     };
     int shape_T[globalVariables::T_FORMNUM][globalVariables::SQUARES_COMPOSED] = {
-        {1, 5, 6, 9},
         {4, 5, 6, 9},
         {1, 4, 5, 9},
         {1, 4, 5, 6},
+        {1, 5, 6, 9},
     };
     int field[globalVariables::HEIGHT][globalVariables::WIDTH];    // empty: -1
     int ghostfield[globalVariables::HEIGHT][globalVariables::WIDTH];    // empty: -1

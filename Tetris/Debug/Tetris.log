@@ -1,8 +1,2 @@
-﻿  Game.cpp
-  main.cpp
-E:\tetris\sfml\include\SFML\Window\WindowHandle.hpp(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
-  Tetris.cpp
-E:\tetris\Tetris\Tetris.cpp(17,12): warning C4244: '引數': 將 'time_t' 轉換為 'unsigned int'，由於類型不同，可能導致資料遺失
-E:\tetris\Tetris\Tetris.cpp(79,12): warning C4244: '引數': 將 'time_t' 轉換為 'unsigned int'，由於類型不同，可能導致資料遺失
-  正在產生程式碼...
-  Tetris.vcxproj -> E:\tetris\Win32\Debug\Tetris.exe
+﻿  Tetris.cpp
+  Tetris.vcxproj -> E:\tetris\Output\Debug\Tetris.exe
